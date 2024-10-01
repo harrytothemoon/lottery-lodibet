@@ -276,11 +276,13 @@ const App = () => {
       {/* Background watermark */}
       <div
         className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-10"
-        style={{ backgroundImage: "url('/background.jpeg')" }}
+        style={{
+          backgroundImage: `url("${process.env.PUBLIC_URL}/background.jpeg")`,
+        }}
       ></div>
 
       <img
-        src="/logo.jpeg"
+        src={`${process.env.PUBLIC_URL}/logo.jpeg`}
         alt="Law in Play Logo"
         className="mb-6 w-48 md:w-64 relative z-10"
       />
