@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/lottery-lodibet/static/css/main.943b23e7.css",
-    "main.js": "/lottery-lodibet/static/js/main.080b1789.js",
+    "main.js": "/lottery-lodibet/static/js/main.4d808363.js",
     "static/js/885.3184a0d0.chunk.js": "/lottery-lodibet/static/js/885.3184a0d0.chunk.js",
     "static/js/453.60b6cb38.chunk.js": "/lottery-lodibet/static/js/453.60b6cb38.chunk.js",
     "static/media/spin.wav": "/lottery-lodibet/static/media/spin.5f0c8d85d4f9155cd6b6.wav",
     "static/media/win.mp3": "/lottery-lodibet/static/media/win.1a4aa36e26105c19f7fc.mp3",
     "index.html": "/lottery-lodibet/index.html",
     "main.943b23e7.css.map": "/lottery-lodibet/static/css/main.943b23e7.css.map",
-    "main.080b1789.js.map": "/lottery-lodibet/static/js/main.080b1789.js.map",
+    "main.4d808363.js.map": "/lottery-lodibet/static/js/main.4d808363.js.map",
     "885.3184a0d0.chunk.js.map": "/lottery-lodibet/static/js/885.3184a0d0.chunk.js.map",
     "453.60b6cb38.chunk.js.map": "/lottery-lodibet/static/js/453.60b6cb38.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.943b23e7.css",
-    "static/js/main.080b1789.js"
+    "static/js/main.4d808363.js"
   ]
 }
