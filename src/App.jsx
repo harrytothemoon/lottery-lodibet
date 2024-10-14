@@ -36,24 +36,27 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
-const Reel = ({ spinning, stopSymbol }) => {
-  const symbols = React.useMemo(() => ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], []);
+const Reel = ({ spinning, stopSymbol, shouldReveal }) => {
+  const symbols = React.useMemo(
+    () => ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    []
+  );
   const [position, setPosition] = useState(
     Math.floor(Math.random() * symbols.length)
   );
 
   useEffect(() => {
     let interval;
-    if (spinning) {
+    if (spinning && !shouldReveal) {
       interval = setInterval(() => {
         setPosition(Math.floor(Math.random() * symbols.length));
-      }, 100);
-    } else if (stopSymbol !== null) {
+      }, 50); // 將間隔時間從 100ms 減少到 50ms，使動畫更快
+    } else if (shouldReveal) {
+      clearInterval(interval);
       setPosition(symbols.indexOf(stopSymbol));
     }
     return () => clearInterval(interval);
-  }, [spinning, stopSymbol, symbols]);
-
+  }, [spinning, stopSymbol, symbols, shouldReveal]);
   return (
     <div className="reel overflow-hidden h-24 w-16 bg-[#1f2028] border-2 border-[#fedfa1] flex items-center justify-center text-5xl font-bold text-[#fedfa1]">
       {symbols[position]}
@@ -62,31 +65,54 @@ const Reel = ({ spinning, stopSymbol }) => {
 };
 
 const SlotMachine = React.forwardRef(({ onComplete, digitCount }, ref) => {
-  const [spinning, setSpinning] = useState(false);
-  const [stopSymbols, setStopSymbols] = useState(Array(digitCount).fill(null));
+ const [spinning, setSpinning] = useState(false);
+ const [stopSymbols, setStopSymbols] = useState(Array(digitCount).fill(null));
+ const [revealedCount, setRevealedCount] = useState(0);
 
-  const spin = useCallback(
-    (result) => {
-      setSpinning(true);
-      setStopSymbols(Array(digitCount).fill(null));
+ const spin = useCallback(
+   (result) => {
+     setSpinning(true);
+     setStopSymbols(Array(digitCount).fill(null));
+     setRevealedCount(0);
 
-      setTimeout(() => {
-        setSpinning(false);
-        setStopSymbols(result);
-        onComplete(result.join(""));
-      }, 4000);
-    },
-    [onComplete, digitCount]
-  );
+     const revealNextDigit = (index) => {
+       if (index < digitCount) {
+         setTimeout(
+           () => {
+             setStopSymbols((prev) => {
+               const newSymbols = [...prev];
+               newSymbols[index] = result[index];
+               return newSymbols;
+             });
+             setRevealedCount(index + 1);
+             revealNextDigit(index + 1);
+           },
+           index === digitCount - 1 ? 3000 : 1500
+         );
+       } else {
+         setSpinning(false);
+         onComplete(result.join(""));
+       }
+     };
 
-  React.useImperativeHandle(ref, () => ({
-    spin,
-  }));
+     revealNextDigit(0);
+   },
+   [onComplete, digitCount]
+ );
+
+ React.useImperativeHandle(ref, () => ({
+   spin,
+ }));
 
   return (
     <div className="flex justify-center space-x-2 mb-4 bg-[#272933] p-6 rounded-lg shadow-inner border-4 border-[#fedfa1]">
       {stopSymbols.map((symbol, index) => (
-        <Reel key={index} spinning={spinning} stopSymbol={symbol} />
+        <Reel
+          key={index}
+          spinning={spinning}
+          stopSymbol={symbol}
+          shouldReveal={index < revealedCount}
+        />
       ))}
     </div>
   );
@@ -327,8 +353,12 @@ const App = () => {
         winner.prize = currentPrize;
         setWinners((prev) => [...prev, winner]);
         setCurrentWinner(winner);
-        setIsModalOpen(true);
-        playWinSound();
+
+        // 延遲 x 秒後顯示彈窗
+        setTimeout(() => {
+          setIsModalOpen(true);
+          playWinSound();
+        }, 300);
 
         // 从 accountList 中移除已抽中的 ticket
         setAccountList((prevList) => {
